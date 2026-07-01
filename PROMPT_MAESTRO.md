@@ -71,7 +71,7 @@ Recibe POST de un ERP externo con un API token propio del tenant + payload de co
 1. Tipo de comprobante coherente: Emisor RI + receptor RI → Fac A. Emisor RI + receptor Monotributo/CF/Exento → Fac B. Emisor Monotributo → Fac C a cualquiera. **Bloquear Fac A a Consumidor Final.**
 2. `impTotal == impNeto + impIva + impTrib + impTotConc + impOpEx` (tolerancia ±0.01).
 3. Σ `alicuotasIva[].importe == impIva`; Σ `alicuotasIva[].baseImp == impNeto` cuando aplique.
-4. Factura C: impIva=0, impNeto=0, sin array de IVA, todo a impTotal.
+4. Factura C: impIva=0, impNeto=importe (el subtotal va en ImpNeto), sin array de IVA, impTotal=impNeto(+impTrib). AFIP espera el monto en ImpNeto, no en ImpTotConc.
 5. `condicionIvaReceptorId` presente (RG 5616) y coherente con `docTipoReceptor` (CF sin CUIT → doc 99 → cond 5).
 6. Fecha: concepto Productos → `fechaCbte` no más de 10 días atrás ni a futuro. Servicios → exigir FchServDesde/Hasta y FchVtoPago.
 7. puntoVenta numérico > 0.

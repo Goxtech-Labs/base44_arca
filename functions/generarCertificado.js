@@ -11,7 +11,7 @@
 import { createClientFromRequest } from "npm:@base44/sdk";
 import { generarParYCsr, encriptarClave, limpiarCuit } from "./arcaCore.js";
 
-Deno.serve(async (req) => {
+if (!Deno.env.get("ARCA_NO_SERVE")) Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const admin = base44.asServiceRole;

@@ -157,7 +157,7 @@ Corre **antes** de tocar ARCA. Rechaza local para no quemar numeración ni cuota
    - `impTotal == impNeto + impIva + impTrib + impTotConc + impOpEx` (tolerancia ±0,01 por redondeo).
    - Σ `alicuotasIva[].importe == impIva`.
    - Σ `alicuotasIva[].baseImp == impNeto` (cuando aplica).
-   - Factura C: `impIva = 0`, `impNeto = 0`, todo va a `impTotal` como no gravado; no se manda array de IVA.
+   - Factura C: `impIva = 0`, `impNeto = importe` (el subtotal va en ImpNeto), `impTotal = impNeto (+ impTrib)`; no se manda array de IVA. (AFIP espera el monto en ImpNeto, no en ImpTotConc.)
 3. **`condicionIvaReceptorId` presente y coherente** con `docTipoReceptor` (ej: CF sin CUIT → doc 99 → cond 5).
 4. **Fecha**: para concepto Productos, `fechaCbte` no más de 10 días hacia atrás ni a futuro respecto de hoy. Para Servicios el rango se amplía y requiere `FchServDesde/Hasta` y `FchVtoPago`.
 5. **Punto de venta**: numérico, > 0. (La verificación de que sea tipo WSFEV1 y esté activo la hace ARCA; se captura el error y se traduce a mensaje claro.)

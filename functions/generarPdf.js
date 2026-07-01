@@ -152,7 +152,7 @@ export async function generarPdfComprobante(base44, emisor, cbte, qr) {
 }
 
 // --- Wrapper HTTP (regenerar PDF de un comprobante existente) ----------------
-Deno.serve(async (req) => {
+if (!Deno.env.get("ARCA_NO_SERVE")) Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const { comprobanteId } = await req.json().catch(() => ({}));

@@ -47,7 +47,9 @@ export default function EmisionForm({ emisor, onEmitido }) {
     const neto = Number(f.neto || 0);
     const pct = IVA_OPCIONES.find((o) => o.id === Number(f.ivaId))?.pct ?? 0;
     if (esC) {
-      return { impNeto: 0, impIva: 0, impTotal: Math.round(neto * 100) / 100, alicuotasIva: [] };
+      // Factura C: el importe va en impNeto, sin IVA. impTotal = impNeto.
+      const monto = Math.round(neto * 100) / 100;
+      return { impNeto: monto, impIva: 0, impTotal: monto, alicuotasIva: [] };
     }
     const impIva = Math.round(neto * (pct / 100) * 100) / 100;
     return {

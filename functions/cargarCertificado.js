@@ -18,7 +18,7 @@ function normalizarCrt(crt) {
   throw new Error("El .crt no parece un PEM válido (falta 'BEGIN CERTIFICATE').");
 }
 
-Deno.serve(async (req) => {
+if (!Deno.env.get("ARCA_NO_SERVE")) Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const admin = base44.asServiceRole;

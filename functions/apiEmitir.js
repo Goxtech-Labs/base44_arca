@@ -24,7 +24,7 @@ function tokensIguales(a, b) {
   return diff === 0;
 }
 
-Deno.serve(async (req) => {
+if (!Deno.env.get("ARCA_NO_SERVE")) Deno.serve(async (req) => {
   try {
     if (req.method !== "POST") return Response.json({ error: "Usá POST." }, { status: 405 });
 

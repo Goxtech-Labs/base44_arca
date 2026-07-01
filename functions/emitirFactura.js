@@ -164,7 +164,7 @@ export async function emitir(base44, emisor, cbte) {
 }
 
 // --- Wrapper HTTP ------------------------------------------------------------
-Deno.serve(async (req) => {
+if (!Deno.env.get("ARCA_NO_SERVE")) Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json().catch(() => ({}));

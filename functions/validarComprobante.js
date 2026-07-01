@@ -90,9 +90,10 @@ export function validar(emisor, cbte) {
   }
 
   // --- 4. Reglas específicas de Factura C ---
+  // AFIP en Factura C: ImpNeto = importe (el subtotal), ImpIVA = 0, sin array
+  // de IVA. ImpTotal = ImpNeto (+ ImpTrib). NO se discrimina IVA.
   if (esC || tipoCbte === CBTE_TIPO.FACTURA_C) {
     if (impIva !== 0) errores.push("Factura C: impIva debe ser 0 (no se discrimina IVA).");
-    if (impNeto !== 0) errores.push("Factura C: impNeto debe ser 0; el total va como no gravado en impTotal.");
     if (Array.isArray(cbte.alicuotasIva) && cbte.alicuotasIva.length > 0) {
       errores.push("Factura C: no se envía array de alícuotas de IVA.");
     }
@@ -136,7 +137,9 @@ export function validar(emisor, cbte) {
   } else if (concepto === CONCEPTO.PRODUCTOS) {
     const diffDias = Math.round((hoy - fecha) / (1000 * 60 * 60 * 24));
     if (diffDias > 10) errores.push("Concepto Productos: fechaCbte no puede ser más de 10 días hacia atrás.");
-    if (diffDias < 0) errores.push("Concepto Productos: no se puede facturar con fecha futura.");
+    // 1 día de gracia hacia adelante para absorber diferencias de huso horario
+    // (el servidor puede estar en UTC). ARCA rechaza la fecha futura real igual.
+    if (diffDias < -1) errores.push("Concepto Productos: no se puede facturar con fecha futura.");
   } else if (concepto === CONCEPTO.SERVICIOS || concepto === CONCEPTO.AMBOS) {
     if (!cbte.fchServDesde || !cbte.fchServHasta || !cbte.fchVtoPago) {
       errores.push("Concepto Servicios/Ambos: exige FchServDesde, FchServHasta y FchVtoPago.");
@@ -151,7 +154,7 @@ export function validar(emisor, cbte) {
 }
 
 // --- Wrapper HTTP ------------------------------------------------------------
-Deno.serve(async (req) => {
+if (!Deno.env.get("ARCA_NO_SERVE")) Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json().catch(() => ({}));

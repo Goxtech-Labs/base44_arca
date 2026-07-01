@@ -94,7 +94,9 @@ export async function obtenerCredenciales(base44, emisor, servicio = "wsfe") {
 }
 
 // --- Wrapper HTTP (debug / invocación directa) -------------------------------
-Deno.serve(async (req) => {
+// El guard ARCA_NO_SERVE evita levantar el server al importar el módulo en tests.
+// Base44 no setea esa variable, así que en producción sirve normalmente.
+if (!Deno.env.get("ARCA_NO_SERVE")) Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const { emisorId } = await req.json().catch(() => ({}));

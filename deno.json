@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "test": "deno test -A dev/tests/"
+  },
+  "fmt": {
+    "exclude": ["dev/tests/"]
+  },
+  "lint": {
+    "exclude": ["dev/"]
+  }
+}

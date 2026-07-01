@@ -1,3 +1,6 @@
 .claude/settings.local.json
 .DS_Store
 node_modules/
+
+# Certificados y claves de prueba de homologación — NUNCA commitear
+dev/.homologacion/
