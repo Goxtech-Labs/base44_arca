@@ -69,6 +69,7 @@ function resp(xml, status = 200) {
     ok: status >= 200 && status < 300,
     status,
     async text() { return xml; },
+    async json() { return JSON.parse(xml); },
   };
 }
 
@@ -88,6 +89,15 @@ export function installMockFetch(opts = {}) {
     if (/FECompUltimoAutorizado/.test(body)) return resp(opts.ultimo ?? respuestaUltimoAutorizado());
     if (/FECAESolicitar/.test(body)) return resp(opts.cae ?? respuestaCAE());
     if (/getPersona/.test(body)) return resp(opts.padron ?? "<soap:Envelope><soap:Body/></soap:Envelope>");
+
+    // Sistema de licencias GoxTech.
+    if (/\/licenses\/check/.test(u)) {
+      const lic = opts.licencia ?? { plan: "basica", active: true, valid_until: null };
+      return resp(JSON.stringify(lic));
+    }
+    if (/\/licenses\/free/.test(u)) {
+      return resp(opts.free ?? JSON.stringify({ message: "Licencia gratuita activada", plan: "basica" }), 201);
+    }
 
     throw new Error(`mockFetch: request no manejado -> ${u}`);
   };

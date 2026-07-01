@@ -1,0 +1,20 @@
+{
+  "name": "ArcaLicencia",
+  "type": "object",
+  "description": "Cache local del estado de licencia de un CUIT contra el servidor de GoxTech. Se refresca cada 7 días; permite operar sin conexión (modo básico siempre usable).",
+  "properties": {
+    "cuit": { "type": "string", "description": "CUIT del emisor (sin guiones). Clave de la licencia." },
+    "plan": {
+      "type": "string",
+      "enum": ["basica", "monthly", "completa"],
+      "default": "basica",
+      "description": "basica = gratis; monthly/completa = pagos."
+    },
+    "active": { "type": "boolean", "default": true },
+    "valid_until": { "type": "string", "description": "Vencimiento (plan mensual). null = sin vencimiento." },
+    "message": { "type": "string", "description": "Mensaje legible del estado del plan." },
+    "appVersion": { "type": "string", "description": "Versión del módulo reportada al servidor." },
+    "cachedAt": { "type": "string", "format": "date-time", "description": "Momento de la última verificación online." }
+  },
+  "required": ["cuit", "plan", "active", "cachedAt"]
+}

@@ -38,6 +38,10 @@
       "type": "string",
       "description": "Token para autenticar el webhook apiEmitir desde un ERP externo."
     },
+    "email": {
+      "type": "string",
+      "description": "Email de contacto. Se usa para registrar la licencia gratis del CUIT en GoxTech."
+    },
     "estado": {
       "type": "string",
       "enum": ["PENDIENTE_CERT", "ACTIVO", "ERROR"],

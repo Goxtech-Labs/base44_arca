@@ -9,6 +9,7 @@ entities/          Definiciones JSON Schema de las entidades Base44
   ArcaEmisor.json
   ArcaTokenCache.json
   ArcaComprobante.json
+  ArcaLicencia.json    cache del plan GoxTech por CUIT (7 días)
 functions/         Backend functions (Deno). arcaCore.js es el helper compartido.
   arcaCore.js          cripto + ambiente + SOAP (no es un endpoint)
   generarCertificado.js
@@ -19,16 +20,18 @@ functions/         Backend functions (Deno). arcaCore.js es el helper compartido
   generarPdf.js
   verificarEmisor.js
   apiEmitir.js         webhook para ERPs externos
+  licencia.js          verificación/registro de licencia GoxTech (gratis)
 components/        UI React
   EmisorForm.jsx
   CertificadoWizard.jsx
   EmisionForm.jsx
   ComprobantesList.jsx
+  LicenciaBadge.jsx    estado del plan + registro gratis
 ```
 
 ## Pasos
 
-1. **Entidades.** Creá `ArcaEmisor`, `ArcaTokenCache` y `ArcaComprobante` con los campos de `entities/*.json`.
+1. **Entidades.** Creá `ArcaEmisor`, `ArcaTokenCache`, `ArcaComprobante` y `ArcaLicencia` con los campos de `entities/*.json`.
 
 2. **Secret obligatorio.** En la configuración del proyecto (secrets), creá:
    ```
@@ -66,6 +69,30 @@ curl -X POST "https://<TU-APP>.base44.app/functions/apiEmitir" \
 ```
 
 Respuesta: `{ ok, estado, cae, caeVencimiento, nroCbte, pdfUrl, comprobanteId }`.
+
+## Licenciamiento GoxTech (gratis)
+
+El módulo se engancha al sistema de licencias de GoxTech (el mismo de FactuSol),
+llaveado por **CUIT**. La emisión es **siempre gratis** (plan `basica`) y **nunca
+se bloquea**: la licencia solo registra el CUIT y trackea versión/uso, y deja
+lista la base para activar features pagas más adelante.
+
+- `licencia.js` verifica contra `GET /licenses/check` (cache-first, 7 días en
+  `ArcaLicencia`, con fallback offline: si no hay conexión, sigue en modo básico).
+- `emitirFactura` adjunta el estado de licencia en su respuesta (campo `licencia`),
+  sin condicionar la emisión.
+- El componente `LicenciaBadge` muestra el plan y permite registrar la licencia
+  gratis (`POST /licenses/free`) con el email del emisor.
+
+Variables de entorno **opcionales** (tienen default productivo):
+
+```
+ARCA_LICENSE_URL    = https://goxtech.com.ar/arca_factusol/api   # base del API de licencias
+ARCA_MODULE_VERSION = 1.0.0                                      # versión reportada al server
+```
+
+Como la licencia se comparte por CUIT entre productos, un CUIT con plan Completo
+en FactuSol también lo verá acá.
 
 ## Notas de implementación
 

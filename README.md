@@ -15,6 +15,7 @@ Módulo **open-source, configurable y de auto-gestión** para emitir facturas el
 - 🔌 **Vinculás tu ERP o app**: endpoint webhook para emitir desde sistemas externos.
 - 📄 **PDF con QR obligatorio** (RG 4892) generado automáticamente.
 - 🧪 Soporta **homologación y producción** con la misma base de código.
+- 🆓 **Licencia gratis de GoxTech** (la misma de FactuSol, por CUIT): la emisión nunca se bloquea; solo registra el CUIT y trackea uso.
 
 ---
 

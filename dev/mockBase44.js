@@ -47,6 +47,7 @@ export function createMockBase44({ onUpload } = {}) {
     ArcaEmisor: coleccion(),
     ArcaTokenCache: coleccion(),
     ArcaComprobante: coleccion(),
+    ArcaLicencia: coleccion(),
   };
   const uploads = [];
   const client = {

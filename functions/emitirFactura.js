@@ -23,6 +23,7 @@ import {
 import { obtenerCredenciales } from "./wsaaLogin.js";
 import { validar } from "./validarComprobante.js";
 import { generarPdfComprobante } from "./generarPdf.js";
+import { verificarLicencia, MODULE_VERSION } from "./licencia.js";
 
 /** Normaliza un nodo que puede venir como objeto único o array. */
 function comoArray(x) {
@@ -54,6 +55,10 @@ export async function emitir(base44, emisor, cbte) {
   }
   const tipoCbte = val.tipoCbte || Number(cbte.tipoCbte);
   const ptoVta = Number(cbte.puntoVenta || emisor.puntoVenta);
+
+  // Licencia GoxTech (no bloqueante): trackea el CUIT y su versión. La emisión
+  // es gratis en cualquier plan; esto solo registra uso. Cache-first (7 días).
+  const licencia = await verificarLicencia(base44, emisor.cuit, { version: MODULE_VERSION }).catch(() => null);
 
   // 2. Credenciales WSAA (reusa cache).
   const cred = await obtenerCredenciales(base44, emisor);
@@ -155,12 +160,12 @@ export async function emitir(base44, emisor, cbte) {
       // El comprobante ya es válido aunque el PDF falle; se puede regenerar.
       comprobante.pdfError = e.message;
     }
-    return { ok: estado !== "RECHAZADO", estado, comprobante, observaciones: traducirErrorArca(observaciones) };
+    return { ok: estado !== "RECHAZADO", estado, comprobante, licencia, observaciones: traducirErrorArca(observaciones) };
   }
 
   // Rechazado: guardamos igual para trazabilidad.
   const comprobante = await admin.entities.ArcaComprobante.create(registro);
-  return { ok: false, estado, comprobante, errores: traducirErrorArca(observaciones) };
+  return { ok: false, estado, comprobante, licencia, errores: traducirErrorArca(observaciones) };
 }
 
 // --- Wrapper HTTP ------------------------------------------------------------

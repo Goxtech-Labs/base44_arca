@@ -225,3 +225,35 @@ Contenido del QR = URL `https://www.afip.gob.ar/fe/qr/?p=` + base64 de este JSON
 - `npm:@base44/sdk` — cliente y acceso a entidades.
 
 Se evita a propósito una librería SOAP monolítica: el request WSFEv1 se arma como XML plano y se postea con `fetch`. Más control, menos peso, mejor debug del `<soap:Fault>`.
+
+---
+
+## 11. Licenciamiento GoxTech (gratis)
+
+El módulo se integra con el sistema de licencias de GoxTech — el **mismo backend que usa el módulo de FactuSol** (`https://goxtech.com.ar/arca_factusol/api`). La licencia se llavea por **CUIT**, así que se comparte entre productos.
+
+**Política de este módulo:** la emisión es **siempre gratis** (plan `basica`) y **nunca se bloquea**. La licencia solo registra el CUIT y trackea versión/uso. Los planes pagos (`monthly`, `completa`) quedan disponibles para gatear features a futuro sin cambiar el resto del código.
+
+| Endpoint (server) | Uso en el módulo |
+|---|---|
+| `GET /licenses/check?cuit=&v=` | Verifica el plan. Devuelve `{plan, active, valid_until}`. |
+| `POST /licenses/free` | Registra la licencia gratis (`{cuit, email, company_name}`). |
+
+Flujo del cliente (`functions/licencia.js`), idéntico al de FactuSol:
+
+1. **Cache-first**: si hay un `ArcaLicencia` para el CUIT con menos de 7 días, se usa sin pegarle al server (evita latencia por emisión).
+2. Si el cache venció → consulta online y actualiza `ArcaLicencia`.
+3. **Sin conexión** → cae al último cache; si no hay, opera en modo `basica`. Nunca deja de funcionar.
+
+`emitirFactura` llama a `verificarLicencia` (no bloqueante) y adjunta el estado en el campo `licencia` de la respuesta. `verificarEmisor` y la UI (`LicenciaBadge`) exponen el registro gratis. Endpoints y versión son parametrizables por env (`ARCA_LICENSE_URL`, `ARCA_MODULE_VERSION`).
+
+### `ArcaLicencia` — cache de licencia por CUIT
+| Campo | Tipo | Notas |
+|---|---|---|
+| `cuit` | string | clave |
+| `plan` | enum | `basica` / `monthly` / `completa` |
+| `active` | bool | |
+| `valid_until` | string | vencimiento (plan mensual) |
+| `message` | string | estado legible |
+| `appVersion` | string | versión reportada |
+| `cachedAt` | datetime | última verificación online |

@@ -67,6 +67,8 @@ Deno.test("emitir: Factura B aprobada -> CAE, comprobante persistido y PDF", asy
     // el QR quedó guardado; el PDF se subió (o registró pdfError si jsPDF no corre)
     assert(r.comprobante.qrPayload, "debe tener qrPayload");
     assert(r.comprobante.pdfUrl || r.comprobante.pdfError, "PDF subido o error registrado");
+    // la licencia se adjunta (no bloquea): plan básica por defecto
+    assertEquals(r.licencia?.plan, "basica");
   } finally {
     mock.restore();
   }

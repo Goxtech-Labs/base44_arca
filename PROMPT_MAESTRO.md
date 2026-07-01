@@ -89,6 +89,13 @@ Contenido = `https://www.afip.gob.ar/fe/qr/?p=` + base64(JSON) con campos: ver=1
 - "Fecha del comprobante fuera de rango" → regla de 10 días.
 - Token/sign inválido o vencido → forzar re-login WSAA.
 
+### LICENCIAMIENTO GOXTECH (gratis, no bloqueante)
+Integrá el sistema de licencias de GoxTech (el mismo de FactuSol), llaveado por CUIT y compartido entre productos. **La emisión es siempre gratis (plan `basica`) y NUNCA se bloquea**: la licencia solo registra el CUIT y trackea versión/uso.
+- Base API (parametrizá por env `ARCA_LICENSE_URL`): `https://goxtech.com.ar/arca_factusol/api`. Versión por env `ARCA_MODULE_VERSION`.
+- Entidad `ArcaLicencia`: cuit, plan (enum basica|monthly|completa), active, valid_until, message, appVersion, cachedAt. Cache-first 7 días.
+- Function `licencia`: `verificarLicencia(cuit)` → `GET /licenses/check?cuit=&v=` con cache 7 días y fallback offline (si no hay internet, opera en `basica`, nunca falla). `registrarLicenciaGratis({cuit,email,companyName})` → `POST /licenses/free`. Helpers `tieneCompleta`/`esPago` para features pagas futuras.
+- `emitirFactura` llama a `verificarLicencia` (no bloqueante) y adjunta `licencia` en la respuesta. La UI muestra el plan y permite registrar la licencia gratis con el email del emisor.
+
 ### ENTREGABLES
 1. Definición de las entidades.
 2. El código de cada backend function (Deno, comentado en español).
