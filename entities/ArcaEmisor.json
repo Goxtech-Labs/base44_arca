@@ -1,0 +1,49 @@
+{
+  "name": "ArcaEmisor",
+  "type": "object",
+  "description": "Configuración fiscal de un emisor (un CUIT = un emisor). Multi-tenant.",
+  "properties": {
+    "cuit": {
+      "type": "string",
+      "description": "CUIT sin guiones (11 dígitos)."
+    },
+    "razonSocial": {
+      "type": "string",
+      "description": "Razón social o nombre del emisor."
+    },
+    "condicionIva": {
+      "type": "string",
+      "enum": ["RI", "MONOTRIBUTO", "EXENTO"],
+      "description": "Condición del emisor frente al IVA."
+    },
+    "puntoVenta": {
+      "type": "number",
+      "description": "Punto de venta tipo WSFEV1, activo en ARCA."
+    },
+    "ambiente": {
+      "type": "string",
+      "enum": ["HOMOLOGACION", "PRODUCCION"],
+      "default": "HOMOLOGACION",
+      "description": "El certificado de HOMO no sirve en PROD y viceversa."
+    },
+    "certificadoCrt": {
+      "type": "string",
+      "description": "Certificado .crt en PEM emitido por ARCA."
+    },
+    "clavePrivadaEnc": {
+      "type": "string",
+      "description": "Clave privada .key ENCRIPTADA (AES-GCM). Nunca en texto plano."
+    },
+    "apiToken": {
+      "type": "string",
+      "description": "Token para autenticar el webhook apiEmitir desde un ERP externo."
+    },
+    "estado": {
+      "type": "string",
+      "enum": ["PENDIENTE_CERT", "ACTIVO", "ERROR"],
+      "default": "PENDIENTE_CERT",
+      "description": "PENDIENTE_CERT hasta que se cargue el .crt válido."
+    }
+  },
+  "required": ["cuit", "razonSocial", "condicionIva", "puntoVenta", "ambiente"]
+}

@@ -1,0 +1,54 @@
+{
+  "name": "ArcaComprobante",
+  "type": "object",
+  "description": "Comprobante electrónico emitido (o rechazado) contra WSFEv1.",
+  "properties": {
+    "emisorId": { "type": "string", "description": "Ref a ArcaEmisor." },
+    "tipoCbte": { "type": "number", "description": "CbteTipo WSFEv1 (1=FacA, 6=FacB, 11=FacC...)." },
+    "puntoVenta": { "type": "number" },
+    "nroCbte": { "type": "number", "description": "Número asignado (FECompUltimoAutorizado + 1)." },
+    "concepto": { "type": "number", "description": "1=Productos, 2=Servicios, 3=Ambos." },
+    "docTipoReceptor": { "type": "number", "description": "80=CUIT, 86=CUIL, 96=DNI, 99=CF." },
+    "docNroReceptor": { "type": "string" },
+    "condicionIvaReceptorId": { "type": "number", "description": "RG 5616. Obligatorio." },
+    "impNeto": { "type": "number" },
+    "impIva": { "type": "number" },
+    "impTrib": { "type": "number", "default": 0 },
+    "impTotConc": { "type": "number", "default": 0 },
+    "impOpEx": { "type": "number", "default": 0 },
+    "impTotal": { "type": "number" },
+    "alicuotasIva": {
+      "type": "array",
+      "description": "[{id, baseImp, importe}]",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "baseImp": { "type": "number" },
+          "importe": { "type": "number" }
+        }
+      }
+    },
+    "moneda": { "type": "string", "default": "PES" },
+    "cotizacion": { "type": "number", "default": 1 },
+    "fechaCbte": { "type": "string", "format": "date" },
+    "fchServDesde": { "type": "string", "format": "date" },
+    "fchServHasta": { "type": "string", "format": "date" },
+    "fchVtoPago": { "type": "string", "format": "date" },
+    "cae": { "type": "string" },
+    "caeVencimiento": { "type": "string", "format": "date" },
+    "estado": {
+      "type": "string",
+      "enum": ["APROBADO", "RECHAZADO", "OBSERVADO"],
+      "description": "Resultado de ARCA (A/R/O)."
+    },
+    "observaciones": {
+      "type": "array",
+      "description": "[{code, msg}] de Observations/Errors de ARCA.",
+      "items": { "type": "object" }
+    },
+    "qrPayload": { "type": "string", "description": "base64 del JSON del QR (RG 4892)." },
+    "pdfUrl": { "type": "string" }
+  },
+  "required": ["emisorId", "tipoCbte", "puntoVenta", "concepto", "docTipoReceptor", "impTotal", "fechaCbte"]
+}

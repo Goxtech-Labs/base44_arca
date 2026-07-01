@@ -1,0 +1,35 @@
+{
+  "name": "ArcaTokenCache",
+  "type": "object",
+  "description": "Token/Sign vigente del WSAA. El cache vive en DB porque cada function Deno es efímera. Se reutiliza mientras expiraEn > ahora.",
+  "properties": {
+    "cuit": {
+      "type": "string",
+      "description": "CUIT del emisor (sin guiones)."
+    },
+    "servicio": {
+      "type": "string",
+      "default": "wsfe",
+      "description": "Servicio ARCA para el que vale el token."
+    },
+    "ambiente": {
+      "type": "string",
+      "enum": ["HOMOLOGACION", "PRODUCCION"],
+      "description": "Un token de HOMO no vale en PROD."
+    },
+    "token": {
+      "type": "string",
+      "description": "Token del loginTicketResponse."
+    },
+    "sign": {
+      "type": "string",
+      "description": "Sign del loginTicketResponse."
+    },
+    "expiraEn": {
+      "type": "string",
+      "format": "date-time",
+      "description": "expirationTime del TA (validez ~12 h)."
+    }
+  },
+  "required": ["cuit", "servicio", "ambiente", "token", "sign", "expiraEn"]
+}
