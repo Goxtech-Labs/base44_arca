@@ -2,9 +2,25 @@
 import { assert, assertEquals } from "jsr:@std/assert";
 import { createMockBase44 } from "../mockBase44.js";
 import { installMockFetch } from "../mockArca.js";
-import { verificarLicencia, registrarLicenciaGratis, tieneCompleta, esPago } from "../../functions/licencia.js";
+import { verificarLicencia, registrarLicenciaGratis, tieneCompleta, esPago, MODULE_ID, MODULE_TAG } from "../../functions/licencia.js";
 
 const CUIT = "20111111112";
+
+Deno.test("identidad de producto: manda v=base44_arca/<version> en /licenses/check", async () => {
+  const base44 = createMockBase44();
+  const mock = installMockFetch();
+  try {
+    assertEquals(MODULE_ID, "base44_arca");
+    await verificarLicencia(base44, CUIT);
+    const call = mock.calls.find((c) => /licenses\/check/.test(c.url));
+    assert(call, "debe haber consultado /licenses/check");
+    // el v va URL-encodeado (la barra como %2F)
+    assert(
+      call.url.includes(`v=${encodeURIComponent(MODULE_TAG)}`),
+      `la URL debe incluir v=${MODULE_TAG} (encodeado); fue: ${call.url}`,
+    );
+  } finally { mock.restore(); }
+});
 
 Deno.test("verificarLicencia: CUIT desconocido -> basica y cachea", async () => {
   const base44 = createMockBase44();

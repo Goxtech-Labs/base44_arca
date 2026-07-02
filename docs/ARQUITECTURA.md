@@ -245,7 +245,9 @@ Flujo del cliente (`functions/licencia.js`), idéntico al de FactuSol:
 2. Si el cache venció → consulta online y actualiza `ArcaLicencia`.
 3. **Sin conexión** → cae al último cache; si no hay, opera en modo `basica`. Nunca deja de funcionar.
 
-`emitirFactura` llama a `verificarLicencia` (no bloqueante) y adjunta el estado en el campo `licencia` de la respuesta. `verificarEmisor` y la UI (`LicenciaBadge`) exponen el registro gratis. Endpoints y versión son parametrizables por env (`ARCA_LICENSE_URL`, `ARCA_MODULE_VERSION`).
+`emitirFactura` llama a `verificarLicencia` (no bloqueante) y adjunta el estado en el campo `licencia` de la respuesta. `verificarEmisor` y la UI (`LicenciaBadge`) exponen el registro gratis. Endpoints y versión son parametrizables por env (`ARCA_LICENSE_URL`, `ARCA_MODULE_ID`, `ARCA_MODULE_VERSION`).
+
+**Identidad de producto.** El módulo se reporta como `base44_arca/<version>` en el parámetro `v` de `/licenses/check` (`ARCA_MODULE_ID/ARCA_MODULE_VERSION`). El server lo guarda en `app_version`, así el panel admin distingue este módulo de FactuSol u otros clientes que compartan el mismo CUIT. La licencia sigue siendo la misma (por CUIT); esto es solo trazabilidad de qué producto la usa.
 
 ### `ArcaLicencia` — cache de licencia por CUIT
 | Campo | Tipo | Notas |

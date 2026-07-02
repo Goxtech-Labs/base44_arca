@@ -23,7 +23,7 @@ import {
 import { obtenerCredenciales } from "./wsaaLogin.js";
 import { validar } from "./validarComprobante.js";
 import { generarPdfComprobante } from "./generarPdf.js";
-import { verificarLicencia, MODULE_VERSION } from "./licencia.js";
+import { verificarLicencia, MODULE_TAG } from "./licencia.js";
 
 /** Normaliza un nodo que puede venir como objeto único o array. */
 function comoArray(x) {
@@ -58,7 +58,7 @@ export async function emitir(base44, emisor, cbte) {
 
   // Licencia GoxTech (no bloqueante): trackea el CUIT y su versión. La emisión
   // es gratis en cualquier plan; esto solo registra uso. Cache-first (7 días).
-  const licencia = await verificarLicencia(base44, emisor.cuit, { version: MODULE_VERSION }).catch(() => null);
+  const licencia = await verificarLicencia(base44, emisor.cuit, { version: MODULE_TAG }).catch(() => null);
 
   // 2. Credenciales WSAA (reusa cache).
   const cred = await obtenerCredenciales(base44, emisor);

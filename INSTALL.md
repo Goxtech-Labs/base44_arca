@@ -88,8 +88,13 @@ Variables de entorno **opcionales** (tienen default productivo):
 
 ```
 ARCA_LICENSE_URL    = https://goxtech.com.ar/arca_factusol/api   # base del API de licencias
-ARCA_MODULE_VERSION = 1.0.0                                      # versión reportada al server
+ARCA_MODULE_ID      = base44_arca                                # identidad de producto
+ARCA_MODULE_VERSION = 1.0.0                                      # versión del módulo
 ```
+
+El módulo se identifica ante el server enviando `v=base44_arca/1.0.0` (`ARCA_MODULE_ID/ARCA_MODULE_VERSION`)
+en `/licenses/check`. El server lo guarda como `app_version`, así en el panel
+admin se distingue este módulo de FactuSol u otros clientes del mismo CUIT.
 
 Como la licencia se comparte por CUIT entre productos, un CUIT con plan Completo
 en FactuSol también lo verá acá.

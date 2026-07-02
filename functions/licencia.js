@@ -18,7 +18,14 @@ import { limpiarCuit } from "./arcaCore.js";
 
 // Base del API de licencias (override por env para self-host / testing).
 const LICENSE_BASE = Deno.env.get("ARCA_LICENSE_URL") || "https://goxtech.com.ar/arca_factusol/api";
+
+// Identidad de producto ante el server de licencias. Se reporta en el parámetro
+// `v` de /licenses/check → el server lo guarda como app_version, así en el panel
+// admin se distingue este módulo de FactuSol u otros clientes del mismo CUIT.
+export const MODULE_ID = Deno.env.get("ARCA_MODULE_ID") || "base44_arca";
 export const MODULE_VERSION = Deno.env.get("ARCA_MODULE_VERSION") || "1.0.0";
+export const MODULE_TAG = `${MODULE_ID}/${MODULE_VERSION}`; // ej: "base44_arca/1.0.0"
+
 const CACHE_TTL_MS = 7 * 24 * 3600 * 1000; // 7 días
 
 function basica(cuit, message, fromCache = false) {
@@ -63,7 +70,7 @@ async function guardarCache(admin, cuit, plan, active, valid_until, version) {
  * en cada emisión; con `force` fuerza la consulta online.
  * @returns { plan, active, valid, from_cache, valid_until, cuit, message }
  */
-export async function verificarLicencia(base44, cuit, { version = MODULE_VERSION, force = false } = {}) {
+export async function verificarLicencia(base44, cuit, { version = MODULE_TAG, force = false } = {}) {
   const admin = base44.asServiceRole;
   const c = limpiarCuit(cuit);
   if (!c || c.length < 10) return basica(c, "Configurá el CUIT del emisor para verificar el plan");
@@ -100,7 +107,7 @@ export async function verificarLicencia(base44, cuit, { version = MODULE_VERSION
  * Registra la licencia GRATIS del CUIT (captura email + empresa). Idempotente:
  * si el CUIT ya tiene plan superior, el servidor no lo degrada.
  */
-export async function registrarLicenciaGratis(base44, { cuit, email, companyName = "", version = MODULE_VERSION }) {
+export async function registrarLicenciaGratis(base44, { cuit, email, companyName = "", version = MODULE_TAG }) {
   const c = limpiarCuit(cuit);
   if (!c || c.length < 10) throw new Error("CUIT inválido.");
   if (!email || !email.includes("@")) throw new Error("Email inválido.");

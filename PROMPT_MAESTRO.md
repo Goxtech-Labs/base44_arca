@@ -91,7 +91,7 @@ Contenido = `https://www.afip.gob.ar/fe/qr/?p=` + base64(JSON) con campos: ver=1
 
 ### LICENCIAMIENTO GOXTECH (gratis, no bloqueante)
 Integrá el sistema de licencias de GoxTech (el mismo de FactuSol), llaveado por CUIT y compartido entre productos. **La emisión es siempre gratis (plan `basica`) y NUNCA se bloquea**: la licencia solo registra el CUIT y trackea versión/uso.
-- Base API (parametrizá por env `ARCA_LICENSE_URL`): `https://goxtech.com.ar/arca_factusol/api`. Versión por env `ARCA_MODULE_VERSION`.
+- Base API (parametrizá por env `ARCA_LICENSE_URL`): `https://goxtech.com.ar/arca_factusol/api`. Identidad de producto por env `ARCA_MODULE_ID` (default `base44_arca`) + `ARCA_MODULE_VERSION`: reportá `v=<ARCA_MODULE_ID>/<ARCA_MODULE_VERSION>` en `/licenses/check` para distinguir este módulo en el panel admin (misma licencia por CUIT).
 - Entidad `ArcaLicencia`: cuit, plan (enum basica|monthly|completa), active, valid_until, message, appVersion, cachedAt. Cache-first 7 días.
 - Function `licencia`: `verificarLicencia(cuit)` → `GET /licenses/check?cuit=&v=` con cache 7 días y fallback offline (si no hay internet, opera en `basica`, nunca falla). `registrarLicenciaGratis({cuit,email,companyName})` → `POST /licenses/free`. Helpers `tieneCompleta`/`esPago` para features pagas futuras.
 - `emitirFactura` llama a `verificarLicencia` (no bloqueante) y adjunta `licencia` en la respuesta. La UI muestra el plan y permite registrar la licencia gratis con el email del emisor.
