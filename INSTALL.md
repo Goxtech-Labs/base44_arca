@@ -87,12 +87,20 @@ lista la base para activar features pagas más adelante.
 Variables de entorno **opcionales** (tienen default productivo):
 
 ```
-ARCA_LICENSE_URL    = https://goxtech.com.ar/arca_factusol/api   # base del API de licencias
+ARCA_LICENSE_URL    = https://goxtech.com.ar/base44_arca/api     # mount propio de base44 (default)
 ARCA_MODULE_ID      = base44_arca                                # identidad de producto
 ARCA_MODULE_VERSION = 1.0.0                                      # versión del módulo
 ```
 
-El módulo se identifica ante el server enviando `v=base44_arca/1.0.0` (`ARCA_MODULE_ID/ARCA_MODULE_VERSION`)
+El módulo tiene su **mount propio** en el server de licencias (`/base44_arca/api`),
+que proxya al **mismo backend y la misma base** que FactuSol (la licencia es por
+CUIT). Requiere que en el server esté aplicada la `location` de Nginx (ver
+`nginx_snippet.conf` / `BASE44_MOUNT.md` en el repo `GoxTech_ARCA_Site`). Hasta
+que se despliegue, podés apuntar `ARCA_LICENSE_URL` al path histórico
+`https://goxtech.com.ar/arca_factusol/api` — pega al mismo backend. Si el endpoint
+no responde, la verificación cae a modo básico sin romper la emisión.
+
+Además se identifica enviando `v=base44_arca/1.0.0` (`ARCA_MODULE_ID/ARCA_MODULE_VERSION`)
 en `/licenses/check`. El server lo guarda como `app_version`, así en el panel
 admin se distingue este módulo de FactuSol u otros clientes del mismo CUIT.
 

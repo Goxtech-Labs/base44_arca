@@ -17,7 +17,9 @@ import { createClientFromRequest } from "npm:@base44/sdk";
 import { limpiarCuit } from "./arcaCore.js";
 
 // Base del API de licencias (override por env para self-host / testing).
-const LICENSE_BASE = Deno.env.get("ARCA_LICENSE_URL") || "https://goxtech.com.ar/arca_factusol/api";
+// base44_arca tiene su propio mount (mismo backend/DB que FactuSol, por CUIT).
+// Fallback histórico que sigue vigente: https://goxtech.com.ar/arca_factusol/api
+const LICENSE_BASE = Deno.env.get("ARCA_LICENSE_URL") || "https://goxtech.com.ar/base44_arca/api";
 
 // Identidad de producto ante el server de licencias. Se reporta en el parámetro
 // `v` de /licenses/check → el server lo guarda como app_version, así en el panel

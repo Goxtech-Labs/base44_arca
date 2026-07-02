@@ -230,7 +230,7 @@ Se evita a propósito una librería SOAP monolítica: el request WSFEv1 se arma 
 
 ## 11. Licenciamiento GoxTech (gratis)
 
-El módulo se integra con el sistema de licencias de GoxTech — el **mismo backend que usa el módulo de FactuSol** (`https://goxtech.com.ar/arca_factusol/api`). La licencia se llavea por **CUIT**, así que se comparte entre productos.
+El módulo se integra con el sistema de licencias de GoxTech — el **mismo backend que usa el módulo de FactuSol**. La licencia se llavea por **CUIT**, así que se comparte entre productos. base44 tiene su **mount propio** (`https://goxtech.com.ar/base44_arca/api`), una `location` de Nginx aditiva que proxya al mismo servicio FastAPI y la misma DB (no toca `/arca_factusol/`). El path histórico `/arca_factusol/api` sigue vigente como fallback.
 
 **Política de este módulo:** la emisión es **siempre gratis** (plan `basica`) y **nunca se bloquea**. La licencia solo registra el CUIT y trackea versión/uso. Los planes pagos (`monthly`, `completa`) quedan disponibles para gatear features a futuro sin cambiar el resto del código.
 
